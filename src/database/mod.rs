@@ -1,6 +1,7 @@
 use crate::models::{project::ProjectAttribute, Account, Entity, Project, User};
 use serde_json::Value;
 use sqlx::{postgres::PgPoolOptions, PgPool, Result};
+use tracing::debug;
 
 /// Connects to a PostgreSQL database with the given `db_url`, returning a connection pool for accessing it
 pub async fn connect_sqlx(db_url: &str) -> sqlx::PgPool {
@@ -425,6 +426,7 @@ impl PostgreDatabase {
         key: &str,
         value: String,
     ) -> Result<(), sqlx::Error> {
+        debug!("UPDATE {} = {}", key, value);
         sqlx::query!(
             r#"
             INSERT INTO project_attribute (project_id, key, value, value_type)

@@ -12,7 +12,9 @@ use crate::scheduler::Scheduler;
 use health::health_checker_handler;
 use tower_http::trace::TraceLayer;
 use tracing::info;
-
+use tracing_subscriber::fmt::format::FmtSpan;
+use tracing_subscriber::EnvFilter;
+use tracing_subscriber::prelude::*;
 use crate::{AppState, Config};
 
 use axum::{routing::get, Router};
@@ -24,8 +26,17 @@ pub async fn make_app() -> Result<Router, Box<dyn Error>> {
     if dotenv().is_err() {
         println!("Starting server without .env file.");
     }
-    tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::DEBUG)
+    // Configure the tracing subscriber with a custom filter
+    let filter = EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| EnvFilter::new("debug"))
+        .add_directive("selectors=off".parse().unwrap())
+        .add_directive("reqwest=off".parse().unwrap())
+        .add_directive("hyper_util=off".parse().unwrap());
+
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer()
+            .with_span_events(FmtSpan::CLOSE)
+            .with_filter(filter))
         .init();
     let config = Config::init();
     // configure_logger(&config.log_level);
