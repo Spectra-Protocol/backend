@@ -75,7 +75,7 @@ impl Scheduler {
                 task_type: TaskType::TotalValueLocked,
             },
             Task {
-                interval: Duration::from_secs(240),
+                interval: Duration::from_secs(300),
                 project_id: 1,
                 task_type: TaskType::TokenTerminalData,
             },
@@ -111,7 +111,7 @@ impl Scheduler {
             },
         ];
 
-        let delay = Duration::from_secs(120);
+        let delay = Duration::from_secs(240);
         for task in tasks {
             let db = Arc::clone(&self.db);
             let external = Arc::clone(&self.external);

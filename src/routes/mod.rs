@@ -31,6 +31,7 @@ pub async fn make_app() -> Result<Router, Box<dyn Error>> {
         .unwrap_or_else(|_| EnvFilter::new("debug"))
         .add_directive("selectors=off".parse().unwrap())
         .add_directive("reqwest=off".parse().unwrap())
+        .add_directive("html5ever=off".parse().unwrap())
         .add_directive("hyper_util=off".parse().unwrap());
 
     tracing_subscriber::registry()
